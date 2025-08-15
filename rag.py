@@ -12,7 +12,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_groq import ChatGroq
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
-from langchain_community.document_loaders import SeleniumURLLoader
+from langchain_community.document_loaders import UnstructuredURLLoader
 from langchain.chains import LLMChain
 from prompt import PROMPT, EXAMPLE_PROMPT
 import streamlit as st
@@ -91,7 +91,7 @@ def process_urls(urls):
             initialize_components()
 
         yield "Loading data..."
-        loader = SeleniumURLLoader(urls=urls)
+        loader = UnstructuredURLLoader(urls=urls)
         data = loader.load()
 
         if not data:

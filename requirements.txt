@@ -11,4 +11,4 @@ sentence-transformers==5.1.0
 transformers
 torch
 unstructured
-selenium
+beautifulsoup4
