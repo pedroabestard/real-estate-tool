@@ -1,0 +1,11 @@
+python-dotenv
+streamlit
+langchain==0.3.27
+langchain-community==0.3.27
+langchain-groq==0.3.7
+langchain-huggingface==0.3.1
+langchain-chroma==0.2.5
+chromadb==1.0.16
+sentence-transformers==5.1.0
+requests
+beautifulsoup4
