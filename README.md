@@ -1,4 +1,5 @@
 # 🏠 Real Estate Research Tool
+[![Open on Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://real-estate-tool.streamlit.app/)
 
 A **persistent, URL-powered RAG app** that helps you research real estate trends, mortgage rates, and market news without copy-pasting articles into ChatGPT.
 
@@ -18,14 +19,12 @@ Instead of losing context every time you start a new conversation, this app **bu
 
 ## ⚙️ How it works
 
-![Architecture Diagram](architecture.png)
-
 1. **Input**: Paste 1–3 URLs in the sidebar (ideally real-estate related news).
 2. **Processing**:  
-   - Content scraped with `SeleniumURLLoader`.
+   - Content scraped using **requests + BeautifulSoup** (replacing Selenium due to cloud compatibility issues).
    - Split into semantic chunks with `RecursiveCharacterTextSplitter`.
-   - Embedded using `Alibaba-NLP/gte-base-en-v1.5`.
-   - Stored in a persistent `Chroma` vector database.
+   - Embedded using `sentence-transformers/all-MiniLM-L6-v2`.
+   - Stored in an `in-memory Chroma vector database` for Streamlit Cloud.
 3. **Query**: Ask a question about the aggregated articles.
 4. **Retrieval & Answering**:  
    - Relevant chunks retrieved from the vector store.
@@ -37,11 +36,19 @@ Instead of losing context every time you start a new conversation, this app **bu
 ## 🛠️ Tech Stack
 
 - **LLM**: [`llama-3.3-70b-versatile`](https://groq.com/) (via `langchain_groq`)
-- **Embeddings**: [`Alibaba-NLP/gte-base-en-v1.5`](https://huggingface.co/Alibaba-NLP/gte-base-en-v1.5) (via `langchain_huggingface`)
+- **Embeddings**: [`sentence-transformers/all-MiniLM-L6-v2`](https://huggingface.co/Alibaba-NLP/gte-base-en-v1.5) (via `langchain_huggingface`)
 - **Vector Database**: [Chroma](https://www.trychroma.com/)
 - **Framework**: [LangChain](https://www.langchain.com/)
 - **Frontend**: [Streamlit](https://streamlit.io/)
-- **Scraping**: `SeleniumURLLoader`
+- **Scraping**: `requests` + `BeautifulSoup`
+
+---
+
+## ⚠️ Challenges & Lessons Learned
+
+- **Selenium issues on Streamlit Cloud**: Initially, Selenium with ChromeDriver caused exit code 127 errors due to missing system libraries.
+- **Access Denied on some sites**: Certain news websites blocked bot-like requests. Switching to requests with a browser-like User-Agent solved this.
+- **Simplifying dependencies**: Removed heavy packages like unstructured and Selenium to make deployment lightweight and cloud-friendly.
 
 ---
 
@@ -55,10 +62,9 @@ pip install -r requirements.txt
 
 Make sure you have:
 - **Python 3.10+**
-- A `.streamlit/.secrets.toml` file with your Groq API key and Hugging Face token:
+- A `.streamlit/.secrets.toml` file with your Groq API key:
   ```env
   GROQ_API_KEY="YOUR_KEY_HERE"
-  HF_TOKEN="YOUR_KEY_HERE"
   ```
 
 ---
@@ -70,7 +76,7 @@ streamlit run main.py
 ```
 
 1. Enter up to 3 URLs in the sidebar.
-2. Click **Process URLs** to scrape & store.
+2. Click **Process URLs** to scrape & store content.
 3. Ask a question in the main input field.
 4. Get a concise answer with sources.
 
@@ -81,7 +87,7 @@ streamlit run main.py
 1. Push your repo to GitHub.
 2. Go to [share.streamlit.io](https://share.streamlit.io/).
 3. Connect your repo and deploy.
-4. Add `GROQ_API_KEY` and `HF_TOKEN` in **Secrets**.
+4. Add `GROQ_API_KEY` in **Secrets**.
 
 Your app will now be available online 24/7.
 
