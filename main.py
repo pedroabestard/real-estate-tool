@@ -16,6 +16,8 @@ url1, url2, url3 = st.sidebar.text_input("URL 1"), st.sidebar.text_input("URL 2"
 
 placeholder = st.empty()
 
+urls = [url for url in (url1, url2, url3) if url != '']
+
 # ---------------------------
 # Process URLs button
 # ---------------------------
